@@ -2,6 +2,8 @@ import { GoogleGenAI } from '@google/genai';
 import { env } from '../config/env';
 import { logger } from '../config/logger';
 import { AppError } from '../middleware/errorHandler';
+import { cacheService } from '../utils/cache';
+import crypto from 'crypto';
 
 const aiClient = env.GEMINI_API_KEY ? new GoogleGenAI({ apiKey: env.GEMINI_API_KEY }) : null;
 
@@ -228,7 +230,7 @@ RESPONSE FORMAT RULES:
 
 Deliver your response now:`;
 
-    return this.callLLM(prompt, true);
+    return this.callLLM(prompt, false);
   }
 
   async generatePortfolioBio(profile: {
@@ -278,10 +280,16 @@ Respond ONLY with a JSON object:
   ]
 }`;
 
-    return this.callLLM(prompt);
+    return this.callLLM(prompt, true);
   }
 
-  private async callLLM(prompt: string, isJson: boolean = false, retries: number = 2): Promise<string> {
+  private async callLLM(prompt: string, isJson: boolean = true, retries: number = 3): Promise<any> {
+    const cacheKey = `llm:${crypto.createHash('sha256').update(prompt + isJson.toString()).digest('hex')}`;
+    const cached = await cacheService.get(cacheKey);
+    if (cached) {
+      return isJson ? JSON.parse(cached) : cached;
+    }
+
     try {
       const client = this.getClient();
       const response = await client.models.generateContent({
@@ -293,7 +301,26 @@ Respond ONLY with a JSON object:
         }
       });
 
-      return response.text || '';
+      const rawText = response.text || '';
+      
+      if (!isJson) {
+        await cacheService.set(cacheKey, rawText, 60 * 60 * 24 * 7); // Cache for 7 days
+        return rawText;
+      }
+
+      try {
+        // Strip markdown code fences Gemini sometimes wraps JSON in
+        let jsonText = rawText.trim();
+        const fenceMatch = jsonText.match(/```(?:json)?\s*([\s\S]*?)```/);
+        if (fenceMatch) jsonText = fenceMatch[1].trim();
+        const result = JSON.parse(jsonText);
+        await cacheService.set(cacheKey, JSON.stringify(result), 60 * 60 * 24 * 7); // Cache JSON for 7 days
+        return result;
+      } catch (parseError) {
+        // If JSON mode is on but parse fails, return raw text as fallback instead of throwing
+        console.warn('JSON parse failed, returning raw text:', parseError);
+        return rawText;
+      }
     } catch (error: any) {
       const errorMessage = error?.message || String(error);
       

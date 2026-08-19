@@ -10,6 +10,8 @@ import { requestId } from './middleware/requestId';
 import routes from './routes';
 import { roadmapService } from './services/roadmap.service';
 import { CodingService } from './services/coding.service';
+import { cacheService } from './utils/cache';
+import RedisStore from 'rate-limit-redis';
 
 const app = express();
 const codingService = new CodingService();
@@ -26,6 +28,11 @@ const limiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   message: { success: false, error: { code: 'RATE_LIMITED', message: 'Too many requests, please try again later' } },
+  ...(cacheService.redisClient && cacheService.isConnected ? {
+    store: new RedisStore({
+      sendCommand: (...args: string[]) => cacheService.redisClient!.sendCommand(args),
+    })
+  } : {})
 });
 app.use('/api/', limiter);
 
@@ -35,6 +42,12 @@ const aiLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   message: { success: false, error: { code: 'AI_RATE_LIMITED', message: 'AI request limit reached. Please wait a moment.' } },
+  ...(cacheService.redisClient && cacheService.isConnected ? {
+    store: new RedisStore({
+      sendCommand: (...args: string[]) => cacheService.redisClient!.sendCommand(args),
+      prefix: 'rl:ai:'
+    })
+  } : {})
 });
 app.use('/api/v1/ai/', aiLimiter);
 
