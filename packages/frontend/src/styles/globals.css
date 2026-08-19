@@ -1,0 +1,289 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Premium Crisp Light Theme */
+    --background: 0 0% 98%; /* Off-white */
+    --foreground: 240 10% 3.9%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+    
+    --radius: 0.75rem; /* Softer radius */
+
+    /* Animation timing */
+    --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .dark {
+    /* Premium Midnight Space Dark Theme */
+    --background: 230 25% 6%; /* Deep midnight/slate */
+    --foreground: 210 40% 98%;
+    
+    --card: 230 25% 8%; /* Slightly lighter than background */
+    --card-foreground: 210 40% 98%;
+    
+    --popover: 230 25% 8%;
+    --popover-foreground: 210 40% 98%;
+    
+    --primary: 250 100% 70%; /* Vibrant glowing indigo */
+    --primary-foreground: 222.2 47.4% 11.2%;
+    
+    --secondary: 230 20% 14%;
+    --secondary-foreground: 210 40% 98%;
+    
+    --muted: 230 20% 14%;
+    --muted-foreground: 215 20.2% 65.1%;
+    
+    --accent: 230 20% 16%;
+    --accent-foreground: 210 40% 98%;
+    
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    
+    --border: 230 20% 16%;
+    --input: 230 20% 16%;
+    --ring: 250 100% 70%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased selection:bg-primary/20 selection:text-primary;
+    overflow-x: hidden;
+  }
+
+  /* Smooth scroll for all anchored containers */
+  * {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer utilities {
+  /* Glassmorphism Classes */
+  .glass {
+    @apply bg-background/60 backdrop-blur-xl border border-border/50;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  }
+  .glass-panel {
+    @apply bg-card/60 backdrop-blur-xl border border-border/50;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  }
+  .text-glow {
+    text-shadow: 0 0 20px hsl(var(--primary) / 0.5);
+  }
+  .custom-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .custom-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* ─── Smooth Scroll Reveal Animations ──────────────────────────────────── */
+
+  /* Base reveal state */
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.7s var(--ease-cinematic), transform 0.7s var(--ease-cinematic);
+    will-change: opacity, transform;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Directional variants */
+  .reveal-left {
+    opacity: 0;
+    transform: translateX(-40px);
+    transition: opacity 0.65s var(--ease-cinematic), transform 0.65s var(--ease-cinematic);
+  }
+  .reveal-left.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .reveal-right {
+    opacity: 0;
+    transform: translateX(40px);
+    transition: opacity 0.65s var(--ease-cinematic), transform 0.65s var(--ease-cinematic);
+  }
+  .reveal-right.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .reveal-scale {
+    opacity: 0;
+    transform: scale(0.92);
+    transition: opacity 0.6s var(--ease-spring), transform 0.6s var(--ease-spring);
+  }
+  .reveal-scale.visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* Stagger delays */
+  .stagger-1  { transition-delay: 0ms; }
+  .stagger-2  { transition-delay: 80ms; }
+  .stagger-3  { transition-delay: 160ms; }
+  .stagger-4  { transition-delay: 240ms; }
+  .stagger-5  { transition-delay: 320ms; }
+  .stagger-6  { transition-delay: 400ms; }
+  .stagger-7  { transition-delay: 480ms; }
+  .stagger-8  { transition-delay: 560ms; }
+
+  /* ─── Premium Hover Effects ────────────────────────────────────────────── */
+  .hover-lift {
+    transition: transform 0.3s var(--ease-spring), box-shadow 0.3s var(--ease-smooth);
+  }
+  .hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+  }
+
+  .hover-glow:hover {
+    box-shadow: 0 0 0 2px hsl(var(--foreground) / 0.15), 0 8px 30px rgba(0,0,0,0.1);
+    transition: box-shadow 0.3s var(--ease-smooth);
+  }
+
+  /* ─── Page Transition ───────────────────────────────────────────────────── */
+  .page-enter {
+    animation: pageEnter 0.5s var(--ease-cinematic) forwards;
+  }
+
+  @keyframes pageEnter {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* ─── Shimmer Loading ───────────────────────────────────────────────────── */
+  .shimmer {
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  /* ─── Floating Particles ────────────────────────────────────────────────── */
+  .float {
+    animation: float 6s ease-in-out infinite;
+  }
+  .float-delayed {
+    animation: float 6s ease-in-out 2s infinite;
+  }
+  .float-slow {
+    animation: float 9s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  /* ─── Premium Gradient Text ─────────────────────────────────────────────── */
+  .gradient-text {
+    background: linear-gradient(135deg, hsl(var(--foreground)) 0%, hsl(var(--muted-foreground)) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ─── Magnetic Button Effect ────────────────────────────────────────────── */
+  .magnetic {
+    transition: transform 0.2s var(--ease-spring);
+  }
+
+  /* ─── Smooth Number Counter ─────────────────────────────────────────────── */
+  .counter {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+    transition: all 0.4s var(--ease-spring);
+  }
+
+  /* ─── Card Tilt Perspective ─────────────────────────────────────────────── */
+  .perspective {
+    perspective: 1000px;
+    transform-style: preserve-3d;
+  }
+
+  /* ─── Pulse Ring ────────────────────────────────────────────────────────── */
+  .pulse-ring {
+    animation: pulseRing 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+  }
+
+  @keyframes pulseRing {
+    0% { transform: scale(0.85); opacity: 0.8; }
+    50% { transform: scale(1); opacity: 0.5; }
+    100% { transform: scale(0.85); opacity: 0.8; }
+  }
+
+  /* ─── Smooth Underline ──────────────────────────────────────────────────── */
+  .underline-slide {
+    position: relative;
+  }
+  .underline-slide::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: currentColor;
+    transition: width 0.3s var(--ease-spring);
+  }
+  .underline-slide:hover::after {
+    width: 100%;
+  }
+}

@@ -1,0 +1,304 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String                @id @default(uuid())
+  email             String                @unique
+  passwordHash      String?
+  name              String
+  avatarUrl         String?
+  role              Role                  @default(STUDENT)
+  isVerified        Boolean               @default(false)
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
+  aiAgentConfig     AiAgentConfig?
+  aiAgentLogs       AiAgentLog[]
+  atsHistories      AtsHistory[]
+  bookmarks         Bookmark[]
+  chatMessages      ChatMessage[]
+  codingSubmissions CodingSubmission[]
+  interviewSessions InterviewSession[]
+  jobApplications   JobApplication[]
+  notes             Note[]
+  notifications     Notification[]
+  portfolio         Portfolio?
+  profile           Profile?
+  refreshTokens     RefreshToken[]
+  resumes           Resume[]
+  userAchievements  UserAchievement[]
+  roadmapProgress   UserRoadmapProgress[]
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Profile {
+  id             String   @id @default(uuid())
+  userId         String   @unique
+  headline       String?
+  bio            String?
+  targetRole     String?
+  location       String?
+  linkedinUrl    String?
+  githubUsername String?
+  websiteUrl     String?
+  skills         Json?
+  updatedAt      DateTime @updatedAt
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Resume {
+  id              String           @id @default(uuid())
+  userId          String
+  title           String
+  version         Int              @default(1)
+  content         Json
+  atsScore        Int?
+  isDefault       Boolean          @default(false)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  jobApplications JobApplication[]
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Portfolio {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  slug      String   @unique
+  isPublic  Boolean  @default(true)
+  sections  Json?
+  viewCount Int      @default(0)
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Roadmap {
+  id           String                @id @default(uuid())
+  title        String
+  category     String
+  description  String?
+  nodes        Json
+  isPublished  Boolean               @default(false)
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+  userProgress UserRoadmapProgress[]
+}
+
+model UserRoadmapProgress {
+  id              String   @id @default(uuid())
+  userId          String
+  roadmapId       String
+  completedNodes  Json?
+  percentComplete Int      @default(0)
+  lastUpdated     DateTime @updatedAt
+  roadmap         Roadmap  @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roadmapId])
+}
+
+model JobApplication {
+  id            String            @id @default(uuid())
+  userId        String
+  company       String
+  role          String
+  jobUrl        String?
+  status        ApplicationStatus @default(APPLIED)
+  notes         String?
+  resumeId      String?
+  appliedAt     DateTime          @default(now())
+  followUpDate  DateTime?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  isAiGenerated Boolean           @default(false)
+  resume        Resume?           @relation(fields: [resumeId], references: [id])
+  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AiAgentConfig {
+  id                    String   @id @default(uuid())
+  userId                String   @unique
+  isActive              Boolean  @default(false)
+  targetRole            String?
+  location              String?
+  maxApplicationsPerDay Int      @default(5)
+  updatedAt             DateTime @updatedAt
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AiAgentLog {
+  id        String   @id @default(uuid())
+  userId    String
+  action    String
+  status    String   @default("INFO")
+  details   Json?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model InterviewSession {
+  id              String        @id @default(uuid())
+  userId          String
+  type            InterviewType
+  domain          String
+  questionAnswers Json
+  overallScore    Int?
+  feedback        String?
+  createdAt       DateTime      @default(now())
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CodingProblem {
+  id          String             @id @default(uuid())
+  title       String
+  difficulty  Difficulty
+  topic       String
+  description String
+  examples    Json
+  constraints String?
+  testCases   Json
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  bookmarks   Bookmark[]
+  submissions CodingSubmission[]
+}
+
+model CodingSubmission {
+  id          String                 @id @default(uuid())
+  userId      String
+  problemId   String
+  code        String
+  language    String
+  status      CodingSubmissionStatus @default(PENDING)
+  aiFeedback  String?
+  submittedAt DateTime               @default(now())
+  problem     CodingProblem          @relation(fields: [problemId], references: [id])
+  user        User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Note {
+  id              String   @id @default(uuid())
+  userId          String
+  title           String
+  contentMarkdown String
+  tags            Json?
+  updatedAt       DateTime @updatedAt
+  createdAt       DateTime @default(now())
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Bookmark {
+  id           String         @id @default(uuid())
+  userId       String
+  resourceType String
+  resourceId   String
+  problemId    String?
+  createdAt    DateTime       @default(now())
+  problem      CodingProblem? @relation(fields: [problemId], references: [id])
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, resourceType, resourceId])
+}
+
+model Achievement {
+  id               String            @id @default(uuid())
+  title            String
+  description      String
+  iconUrl          String?
+  condition        String
+  createdAt        DateTime          @default(now())
+  userAchievements UserAchievement[]
+}
+
+model UserAchievement {
+  id            String      @id @default(uuid())
+  userId        String
+  achievementId String
+  earnedAt      DateTime    @default(now())
+  achievement   Achievement @relation(fields: [achievementId], references: [id])
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, achievementId])
+}
+
+model ChatMessage {
+  id        String   @id @default(uuid())
+  userId    String
+  role      String
+  content   String
+  metadata  Json?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String
+  message   String
+  type      String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AtsHistory {
+  id              String   @id @default(uuid())
+  userId          String
+  resumeText      String
+  jobDescription  String?
+  score           Int
+  metrics         Json?
+  issues          Json?
+  strengths       Json?
+  missingKeywords Json?
+  enhancedResume  String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum Role {
+  STUDENT
+  RECRUITER
+  ADMIN
+}
+
+enum ApplicationStatus {
+  APPLIED
+  SCREENING
+  INTERVIEW
+  OFFER
+  REJECTED
+  ACCEPTED
+}
+
+enum InterviewType {
+  TECHNICAL
+  BEHAVIORAL
+}
+
+enum CodingSubmissionStatus {
+  PENDING
+  PASSED
+  FAILED
+  ERROR
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
