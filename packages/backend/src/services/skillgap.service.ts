@@ -18,7 +18,7 @@ export class SkillGapService {
     const resumeText = user.resumes[0]?.content ? JSON.stringify(user.resumes[0].content) : undefined;
 
     const result = await aiService.performSkillGapAnalysis(skills, targetRole, resumeText);
-    return JSON.parse(result);
+    return typeof result === 'string' ? JSON.parse(result) : result;
   }
 
   async updateSkills(userId: string, skills: string[]) {

@@ -67,6 +67,7 @@ export class PortfolioService {
     });
 
     try {
+      if (typeof result === 'object') return result;
       const match = result.match(/\{[\s\S]*\}/);
       if (!match) throw new Error("No JSON object found in response");
       return JSON.parse(match[0]);

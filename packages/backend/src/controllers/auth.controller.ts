@@ -78,6 +78,20 @@ export class AuthController {
       next(err);
     }
   }
+
+  async updateProfile(req: Request, res: Response, next: NextFunction) {
+    try {
+      const user = await authService.updateProfile(req.user!.userId, req.body);
+      res.status(200).json({
+        success: true,
+        data: user,
+        message: 'Profile updated successfully',
+        meta: { timestamp: new Date().toISOString(), requestId: req.id },
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 export const authController = new AuthController();

@@ -89,8 +89,11 @@ export class InterviewService {
       history: qa.filter(q => q.feedback).map(q => ({ q: q.question, a: q.answer })),
     });
 
-    const cleanFeedback = feedback.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-    const parsedFeedback = JSON.parse(cleanFeedback);
+    let parsedFeedback = feedback;
+    if (typeof feedback === 'string') {
+      const cleanFeedback = feedback.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      parsedFeedback = JSON.parse(cleanFeedback);
+    }
 
     qa[questionIndex] = { ...currentQ, answer, feedback: parsedFeedback };
     const isComplete = qa.every(q => q.answer !== null);

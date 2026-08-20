@@ -8,13 +8,7 @@ export class ATSService {
     }
 
     const result = await aiService.analyzeATS(resumeText, jobDescription);
-    try {
-      const cleanJson = result.replace(/^```json/m, '').replace(/```$/m, '').trim();
-      return JSON.parse(cleanJson);
-    } catch (err) {
-      console.error('Failed to parse AI response:', result);
-      throw new AppError(500, 'AI_PARSE_ERROR', 'Failed to parse AI response');
-    }
+    return typeof result === 'string' ? JSON.parse(result.replace(/^```json/m, '').replace(/```$/m, '').trim()) : result;
   }
 
   async enhance(resumeText: string, jobDescription?: string, atsIssues?: any) {
@@ -23,13 +17,7 @@ export class ATSService {
     }
 
     const result = await aiService.enhanceResumeForATS(resumeText, jobDescription, atsIssues);
-    try {
-      const cleanJson = result.replace(/^```json/m, '').replace(/```$/m, '').trim();
-      return JSON.parse(cleanJson);
-    } catch (err) {
-      console.error('Failed to parse AI enhance response:', result);
-      throw new AppError(500, 'AI_PARSE_ERROR', 'Failed to parse AI response');
-    }
+    return typeof result === 'string' ? JSON.parse(result.replace(/^```json/m, '').replace(/```$/m, '').trim()) : result;
   }
 
   async extractTextFromBuffer(buffer: Buffer, mimeType: string, originalName?: string): Promise<string> {

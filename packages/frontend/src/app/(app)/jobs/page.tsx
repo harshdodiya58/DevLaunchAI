@@ -22,14 +22,14 @@ import { LocationPicker } from '@/components/LocationPicker';
 /* ─── Constants ─────────────────────────────────────────────────────────────── */
 
 const JOB_ROLES = [
-  { icon: Code2,      label: 'Frontend Developer',    query: 'frontend developer react typescript' },
-  { icon: Server,     label: 'Backend Engineer',       query: 'backend engineer node java python' },
-  { icon: Layers,     label: 'Full Stack Developer',   query: 'full stack developer' },
-  { icon: Cpu,        label: 'ML / AI Engineer',       query: 'machine learning AI engineer python' },
-  { icon: Globe,      label: 'DevOps / Cloud',         query: 'devops cloud engineer kubernetes aws' },
-  { icon: Smartphone, label: 'Mobile Developer',       query: 'mobile developer react native flutter' },
-  { icon: Palette,    label: 'UI/UX Designer',         query: 'UI UX product designer figma' },
-  { icon: Briefcase,  label: 'Product Manager',        query: 'product manager software tech' },
+  { icon: Code2,      label: 'Frontend Developer',    query: 'Frontend Developer' },
+  { icon: Server,     label: 'Backend Engineer',       query: 'Backend Engineer' },
+  { icon: Layers,     label: 'Full Stack Developer',   query: 'Full Stack Developer' },
+  { icon: Cpu,        label: 'ML / AI Engineer',       query: 'Machine Learning AI Engineer' },
+  { icon: Globe,      label: 'DevOps / Cloud',         query: 'DevOps Cloud Engineer' },
+  { icon: Smartphone, label: 'Mobile Developer',       query: 'Mobile Developer' },
+  { icon: Palette,    label: 'UI/UX Designer',         query: 'UI UX Designer' },
+  { icon: Briefcase,  label: 'Product Manager',        query: 'Product Manager' },
 ];
 
 const LOCATIONS = [

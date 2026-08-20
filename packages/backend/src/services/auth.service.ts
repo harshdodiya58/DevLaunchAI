@@ -85,6 +85,68 @@ export class AuthService {
     return user;
   }
 
+  async updateProfile(userId: string, data: {
+    name?: string;
+    avatarUrl?: string;
+    headline?: string;
+    bio?: string;
+    targetRole?: string;
+    location?: string;
+    linkedinUrl?: string;
+    githubUsername?: string;
+    websiteUrl?: string;
+    skills?: string[];
+  }) {
+    const {
+      name,
+      avatarUrl,
+      headline,
+      bio,
+      targetRole,
+      location,
+      linkedinUrl,
+      githubUsername,
+      websiteUrl,
+      skills,
+    } = data;
+
+    const profileFields = {
+      ...(headline !== undefined ? { headline } : {}),
+      ...(bio !== undefined ? { bio } : {}),
+      ...(targetRole !== undefined ? { targetRole } : {}),
+      ...(location !== undefined ? { location } : {}),
+      ...(linkedinUrl !== undefined ? { linkedinUrl } : {}),
+      ...(githubUsername !== undefined ? { githubUsername } : {}),
+      ...(websiteUrl !== undefined ? { websiteUrl } : {}),
+      ...(skills !== undefined ? { skills } : {}),
+    };
+    
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        ...(name ? { name } : {}),
+        ...(avatarUrl !== undefined ? { avatarUrl } : {}),
+        profile: {
+          upsert: {
+            create: profileFields,
+            update: profileFields,
+          },
+        },
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        avatarUrl: true,
+        isVerified: true,
+        profile: true,
+      },
+    });
+
+    return user;
+  }
+
   private generateTokens(user: { id: string; email: string; role: string }) {
     const payload = { userId: user.id, email: user.email, role: user.role };
 

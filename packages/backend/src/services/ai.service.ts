@@ -324,9 +324,9 @@ Respond ONLY with a JSON object:
     } catch (error: any) {
       const errorMessage = error?.message || String(error);
       
-      // If we hit a 503 or 429 and have retries left, wait and try again
-      if (retries > 0 && (errorMessage.includes('503') || errorMessage.includes('UNAVAILABLE') || errorMessage.includes('429'))) {
-        console.warn(`AI Service high demand/rate limit. Retrying in 2 seconds... (${retries} retries left)`);
+      // If we hit a 503, 429, or fetch failed and have retries left, wait and try again
+      if (retries > 0 && (errorMessage.includes('503') || errorMessage.includes('UNAVAILABLE') || errorMessage.includes('429') || errorMessage.includes('fetch failed') || errorMessage.includes('socket hang up') || errorMessage.includes('ECONNRESET'))) {
+        console.warn(`AI Service high demand/network error. Retrying in 2 seconds... (${retries} retries left) - ${errorMessage}`);
         await new Promise(resolve => setTimeout(resolve, 2000));
         return this.callLLM(prompt, isJson, retries - 1);
       }

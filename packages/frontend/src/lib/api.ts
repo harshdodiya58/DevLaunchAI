@@ -60,6 +60,7 @@ export const apiService = {
     refresh: (refreshToken: string) => api.post('/auth/refresh', { refreshToken }),
     logout: () => api.post('/auth/logout'),
     me: () => api.get('/auth/me'),
+    updateProfile: (data: Record<string, any>) => api.patch('/auth/profile', data),
   },
   dashboard: {
     getSummary: () => api.get('/dashboard/summary'),

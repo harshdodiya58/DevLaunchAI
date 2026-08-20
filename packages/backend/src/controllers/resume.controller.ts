@@ -62,8 +62,8 @@ export class ResumeController {
       }
       const result = await aiService.improveBulletPoint(bullet, { role, company });
       try {
-        const cleanJson = result.replace(/^```json/m, '').replace(/```$/m, '').trim();
-        res.json({ success: true, data: JSON.parse(cleanJson), meta: { timestamp: new Date().toISOString(), requestId: req.id } });
+        const parsedData = typeof result === 'string' ? JSON.parse(result.replace(/^```json/m, '').replace(/```$/m, '').trim()) : result;
+        res.json({ success: true, data: parsedData, meta: { timestamp: new Date().toISOString(), requestId: req.id } });
       } catch (parseErr) {
         throw new Error('Failed to parse AI response for bullet point');
       }
@@ -89,8 +89,8 @@ export class ResumeController {
       };
       const result = await aiService.generateProfessionalSummary(profile);
       try {
-        const cleanJson = result.replace(/^```json/m, '').replace(/```$/m, '').trim();
-        res.json({ success: true, data: JSON.parse(cleanJson), meta: { timestamp: new Date().toISOString(), requestId: req.id } });
+        const parsedData = typeof result === 'string' ? JSON.parse(result.replace(/^```json/m, '').replace(/```$/m, '').trim()) : result;
+        res.json({ success: true, data: parsedData, meta: { timestamp: new Date().toISOString(), requestId: req.id } });
       } catch (parseErr) {
         throw new Error('Failed to parse AI response for professional summary');
       }

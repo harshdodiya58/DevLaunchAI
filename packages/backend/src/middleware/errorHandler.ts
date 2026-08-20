@@ -15,13 +15,14 @@ export class AppError extends Error {
 }
 
 export function errorHandler(err: Error, req: Request, res: Response, _next: NextFunction): void {
-  if (err instanceof AppError) {
-    res.status(err.statusCode).json({
+  if (err instanceof AppError || err.name === 'AppError') {
+    const appErr = err as AppError;
+    res.status(appErr.statusCode).json({
       success: false,
       error: {
-        code: err.code,
-        message: err.message,
-        details: err.details,
+        code: appErr.code,
+        message: appErr.message,
+        details: appErr.details,
       },
       meta: { timestamp: new Date().toISOString(), requestId: req.id },
     });

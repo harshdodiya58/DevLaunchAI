@@ -35,12 +35,12 @@ const dockItems = [
   { href: '/roadmaps', label: 'Roadmaps', icon: MapPin },
   { href: '/interview', label: 'Mock Interview', icon: Brain },
   { href: '/chat', label: 'AI Career Chat', icon: MessageSquareText },
-];
+]; 
 
 // Secondary items that go in the "More Tools" dropdown
 const secondaryItems = [
-  { href: '/simulator', label: 'Neural Twin', icon: Ghost },
-  { href: '/agent', label: 'Autonomous Agent', icon: Bot },
+  /* { href: '/simulator', label: 'Neural Twin', icon: Ghost },*/
+  /* { href: '/agent', label: 'Autonomous Agent', icon: Bot }, */
   { href: '/architect', label: 'Project Architect', icon: Component },
   { href: '/github', label: 'GitHub Analytics', icon: Github },
 ];

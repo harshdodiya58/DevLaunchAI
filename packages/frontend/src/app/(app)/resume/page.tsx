@@ -133,6 +133,13 @@ export default function ResumePage() {
           [data-sonner-toaster], [data-radix-toast-viewport], [role="status"], [role="alert"], [role="region"][aria-label="Notifications"] { display: none !important; }
           /* Hide the main UI */
           .print-hidden-ui { display: none !important; }
+          
+          /* Strict page break rules */
+          .avoid-break {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            display: block !important;
+          }
         }
       ` }} />
       <div className="space-y-8 max-w-7xl mx-auto py-8 print-hidden-ui">
@@ -427,7 +434,7 @@ export default function ResumePage() {
                 <h3 className={`text-sm font-bold uppercase tracking-widest border-b-[1.5px] pb-1 mb-3 break-after-avoid ${selectedTemplate === 'startup-clean' ? 'border-blue-700 text-blue-700' : 'border-black text-black'}`}>Experience</h3>
                 <div className="space-y-4">
                   {formData.experience.map((exp, i) => (
-                    <div key={i} className="break-inside-avoid">
+                    <div key={i} className="avoid-break mb-4">
                       <div className="flex justify-between items-baseline mb-1">
                         <h4 className="font-bold text-[15px] text-black">
                           {exp.role} <span className="font-medium text-gray-700">| {exp.company}</span>
@@ -451,7 +458,7 @@ export default function ResumePage() {
                 <h3 className={`text-sm font-bold uppercase tracking-widest border-b-[1.5px] pb-1 mb-3 break-after-avoid ${selectedTemplate === 'startup-clean' ? 'border-blue-700 text-blue-700' : 'border-black text-black'}`}>Projects</h3>
                 <div className="space-y-4">
                   {formData.projects.map((proj, i) => (
-                    <div key={i} className="break-inside-avoid">
+                    <div key={i} className="avoid-break mb-4">
                       <div className="flex justify-between items-baseline mb-1">
                         <h4 className="font-bold text-[15px] text-black">
                           {proj.name}
@@ -547,7 +554,7 @@ export default function ResumePage() {
               <h3 className={`text-sm font-bold uppercase tracking-widest border-b-[1.5px] pb-1 mb-3 break-after-avoid ${selectedTemplate === 'startup-clean' ? 'border-blue-700 text-blue-700' : 'border-black text-black'}`}>Experience</h3>
               <div className="space-y-4">
                 {formData.experience.map((exp, i) => (
-                  <div key={i} className="break-inside-avoid">
+                  <div key={i} className="avoid-break mb-4">
                     <div className="flex justify-between items-baseline mb-1">
                       <h4 className="font-bold text-[15px] text-black">
                         {exp.role} <span className="font-medium text-gray-700">| {exp.company}</span>
@@ -571,7 +578,7 @@ export default function ResumePage() {
               <h3 className={`text-sm font-bold uppercase tracking-widest border-b-[1.5px] pb-1 mb-3 break-after-avoid ${selectedTemplate === 'startup-clean' ? 'border-blue-700 text-blue-700' : 'border-black text-black'}`}>Projects</h3>
               <div className="space-y-4">
                 {formData.projects.map((proj, i) => (
-                  <div key={i} className="break-inside-avoid">
+                  <div key={i} className="avoid-break mb-4">
                     <div className="flex justify-between items-baseline mb-1">
                       <h4 className="font-bold text-[15px] text-black">
                         {proj.name}
